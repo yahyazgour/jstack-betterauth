@@ -3,11 +3,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { client } from "@/lib/client";
+import { useRouter } from "next/navigation";
 
-export const RecentPost = (props: { handleCreate: () => Promise<void> }) => {
+export const RecentPost = ({
+  revalidatePosts,
+}: {
+  revalidatePosts: () => Promise<void>;
+}) => {
   const [name, setName] = useState<string>("");
   const queryClient = useQueryClient();
-  const { handleCreate } = props;
+  const router = useRouter();
 
   const { data: recentPost, isPending: isLoadingPosts } = useQuery({
     queryKey: ["get-recent-post"],
@@ -23,10 +28,12 @@ export const RecentPost = (props: { handleCreate: () => Promise<void> }) => {
       return await res.json();
     },
     onSuccess: async () => {
-      await handleCreate();
+      /* router.refresh(); */
+      await revalidatePosts();
       await queryClient.invalidateQueries({ queryKey: ["get-recent-post"] });
       setName("");
     },
+    onError: (error) => {},
   });
 
   return (

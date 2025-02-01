@@ -1,7 +1,7 @@
 import { posts } from "@/server/db/schema";
 import { desc } from "drizzle-orm";
 import { z } from "zod";
-import { j, publicProcedure } from "../jstack";
+import { authenticatedProcedure, j, publicProcedure } from "../jstack";
 
 export const postRouter = j.router({
   list: publicProcedure.query(async ({ c, ctx }) => {
@@ -30,8 +30,28 @@ export const postRouter = j.router({
       const { name } = input;
       const { db } = ctx;
 
-      const post = await db.insert(posts).values({ name });
+      const now = new Date();
+      const post = await db.insert(posts).values({
+        name,
+        createdAt: now,
+        updatedAt: now,
+      });
 
       return c.superjson(post);
     }),
+
+  "delete-all": publicProcedure.mutation(async ({ c, ctx }) => {
+    // delete all posts in db
+    const { db } = ctx;
+    await db.delete(posts);
+    return c.superjson({ message: "All posts deleted" });
+  }),
+
+  "protected-list": authenticatedProcedure.query(async ({ c, ctx }) => {
+    const { db } = ctx;
+
+    const postsList = await db.select().from(posts);
+
+    return c.superjson(postsList);
+  }),
 });
