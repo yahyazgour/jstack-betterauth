@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ReactQueryProvider } from "../components/providers/react-query-provider";
 
 import "./globals.css";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ModeToggle } from "@/components/layout/mode-toggle";
 
 export const metadata: Metadata = {
   title: "JStack App",
@@ -15,9 +17,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ReactQueryProvider>
+            <ModeToggle />
+            {children}
+          </ReactQueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

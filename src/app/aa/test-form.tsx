@@ -39,7 +39,10 @@ async function submitForm(data: FormValues) {
     return { success: true };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.errors[0].message };
+      return {
+        success: false,
+        error: error.errors[0]?.message || "Validation error",
+      };
     }
     return { success: false, error: "Something went wrong!" };
   }
