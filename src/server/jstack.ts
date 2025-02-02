@@ -22,10 +22,6 @@ export const j = jstack.init<Env>();
  * @see https://jstack.app/docs/backend/middleware
  */
 
-console.log(
-  "--------------------------------------------------------------------------------------------------"
-);
-
 let dbInstance: ReturnType<typeof drizzle>;
 const databaseMiddleware = j.middleware(async ({ c, next }) => {
   if (!dbInstance) {
@@ -35,17 +31,13 @@ const databaseMiddleware = j.middleware(async ({ c, next }) => {
       authToken: TURSO_AUTH_TOKEN,
     });
     dbInstance = drizzle(turso, { schema });
-    console.log("Database instance created:");
-  } else {
-    console.log("Reusing existing database instance:", c.req.path);
   }
-
   return await next({ db: dbInstance });
 });
 
 type AuthMiddlewareOutput = InferMiddlewareOutput<typeof databaseMiddleware>;
 
-let authInstance: ReturnType<typeof betterAuth>;
+export let authInstance: ReturnType<typeof betterAuth>;
 const authMiddleware = j.middleware(async ({ c, ctx, next }) => {
   const { db } = ctx as AuthMiddlewareOutput;
 
@@ -54,6 +46,13 @@ const authMiddleware = j.middleware(async ({ c, ctx, next }) => {
       database: drizzleAdapter(db, {
         provider: "sqlite",
       }),
+      /* user: {
+        additionalFields: {
+          role: {
+            type: "string",
+          },
+        },
+      }, */
       advanced: {
         defaultCookieAttributes: {
           sameSite: "none",
@@ -65,11 +64,7 @@ const authMiddleware = j.middleware(async ({ c, ctx, next }) => {
         requireEmailVerification: false,
       },
     });
-    console.log("Auth instance created:");
-  } else {
-    console.log("Reusing existing auth instance:", c.req.path);
   }
-
   return await next({ auth: authInstance });
 });
 
@@ -94,6 +89,8 @@ const authenticationMiddleware = j.middleware(async ({ c, ctx, next }) => {
  *
  * This is the base piece you use to build new queries and mutations on your API.
  */
+
+export type Session = typeof authInstance.$Infer.Session;
 
 export const publicProcedure = j.procedure
   .use(databaseMiddleware)

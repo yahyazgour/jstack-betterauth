@@ -56,7 +56,6 @@ export function SignUp({
           router.refresh();
         },
         onError: (ctx) => {
-          console.log(ctx);
           alert(ctx.error.message);
         },
       }

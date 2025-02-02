@@ -18,6 +18,7 @@
     "@neondatabase/serverless": "^0.10.4",
     "@tailwindcss/postcss": "^4.0.0",
     "@tanstack/react-query": "^5.51.23",
+    "@tanstack/react-query-devtools": "^5.66.0",
     "babel-plugin-react-compiler": "^19.0.0-beta-27714ef-20250124",
     "better-auth": "^1.1.15",
     "clsx": "^2.1.1",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240815.0",
+    "@eslint/eslintrc": "^3.2.0",
     "@types/node": "^22.10.6",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
@@ -44,6 +46,8 @@
     "eslint-config-next": "^15.1.4",
     "eslint-plugin-drizzle": "^0.2.3",
     "postcss": "^8",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.0.0",
     "typescript": "^5"
   }
