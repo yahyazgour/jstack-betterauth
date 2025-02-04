@@ -22,27 +22,27 @@ export const j = jstack.init<Env>();
  * @see https://jstack.app/docs/backend/middleware
  */
 
-let dbInstance: ReturnType<typeof drizzle>;
+let db: ReturnType<typeof drizzle>;
 const databaseMiddleware = j.middleware(async ({ c, next }) => {
-  if (!dbInstance) {
+  if (!db) {
     const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = env(c);
     const turso = createClient({
       url: TURSO_DATABASE_URL!,
       authToken: TURSO_AUTH_TOKEN,
     });
-    dbInstance = drizzle(turso, { schema });
+    db = drizzle(turso, { schema });
   }
-  return await next({ db: dbInstance });
+  return await next({ db: db });
 });
 
 type AuthMiddlewareOutput = InferMiddlewareOutput<typeof databaseMiddleware>;
 
-export let authInstance: ReturnType<typeof betterAuth>;
-const authMiddleware = j.middleware(async ({ c, ctx, next }) => {
+export let auth: ReturnType<typeof betterAuth>;
+const authMiddleware = j.middleware(async ({ ctx, next }) => {
   const { db } = ctx as AuthMiddlewareOutput;
 
-  if (!authInstance) {
-    authInstance = betterAuth({
+  if (!auth) {
+    auth = betterAuth({
       database: drizzleAdapter(db, {
         provider: "sqlite",
       }),
@@ -65,7 +65,7 @@ const authMiddleware = j.middleware(async ({ c, ctx, next }) => {
       },
     });
   }
-  return await next({ auth: authInstance });
+  return await next({ auth: auth });
 });
 
 type AuthenticationMiddlewareOutput = InferMiddlewareOutput<
@@ -90,7 +90,7 @@ const authenticationMiddleware = j.middleware(async ({ c, ctx, next }) => {
  * This is the base piece you use to build new queries and mutations on your API.
  */
 
-export type Session = typeof authInstance.$Infer.Session;
+export type Session = typeof auth.$Infer.Session;
 
 export const publicProcedure = j.procedure
   .use(databaseMiddleware)
@@ -99,3 +99,7 @@ export const publicProcedure = j.procedure
 export const authenticatedProcedure = publicProcedure.use(
   authenticationMiddleware
 );
+
+// add authorization middleware (organizations)
+// add paywall middleware (premium users)
+// add sudo middleware (admin users)

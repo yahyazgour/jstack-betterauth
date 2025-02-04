@@ -1,99 +1,143 @@
 import { publicProcedure, j } from "../jstack";
 
+const createAuthHandler = (method: "query" | "mutation") =>
+  publicProcedure[method](async ({ c, ctx }) => ctx.auth.handler(c.req.raw));
+
 export const authRouter = j.router({
-  "get-session": publicProcedure.query(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
+  // Session related
+  "get-session": createAuthHandler("query"),
+  "list-sessions": createAuthHandler("query"),
 
-  "sign-in/email": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
+  // Authentication
+  "sign-in/email": createAuthHandler("mutation"),
+  "sign-in/social": createAuthHandler("mutation"),
+  "sign-up/email": createAuthHandler("mutation"),
+  "sign-out": createAuthHandler("mutation"),
 
-  "sign-out": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
+  // Password management
+  "forget-password": createAuthHandler("mutation"),
+  "reset-password": createAuthHandler("mutation"),
+  "reset-password/:token": createAuthHandler("query"),
+  "change-password": createAuthHandler("mutation"),
 
-  "sign-in/social": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
+  // Email verification
+  "verify-email": createAuthHandler("query"),
+  "send-verification-email": createAuthHandler("mutation"),
+  "change-email": createAuthHandler("mutation"),
 
-  "sign-up/email": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
+  // Sessions management
+  "revoke-session": createAuthHandler("mutation"),
+  "revoke-sessions": createAuthHandler("mutation"),
+  "revoke-other-sessions": createAuthHandler("mutation"),
 
-  "forget-password": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
+  // Social accounts
+  "list-accounts": createAuthHandler("query"),
+  "link-social": createAuthHandler("mutation"),
+  "unlink-account": createAuthHandler("mutation"),
 
-  "reset-password": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
+  // User management
+  "update-user": createAuthHandler("mutation"),
+  "delete-user": createAuthHandler("mutation"),
+  "delete-user/callback": createAuthHandler("query"),
 
-  "verify-email": publicProcedure.query(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "send-verification-email": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "change-email": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "change-password": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "update-user": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "delete-user": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "reset-password/:token": publicProcedure.query(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "list-sessions": publicProcedure.query(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "revoke-session": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "revoke-sessions": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "revoke-other-sessions": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "link-social": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "list-accounts": publicProcedure.query(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "delete-user/callback": publicProcedure.query(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  "unlink-account": publicProcedure.mutation(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  ok: publicProcedure.query(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
-
-  error: publicProcedure.query(async ({ c, ctx }) => {
-    return ctx.auth.handler(c.req.raw);
-  }),
+  // Utility
+  ok: createAuthHandler("query"),
+  error: createAuthHandler("query"),
 });
+
+/* export const authRouter = j.router({
+  "get-session": publicProcedure.query(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "sign-in/email": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "sign-out": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "sign-in/social": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "sign-up/email": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "forget-password": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "reset-password": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "verify-email": publicProcedure.query(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "send-verification-email": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "change-email": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "change-password": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "update-user": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "delete-user": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "reset-password/:token": publicProcedure.query(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "list-sessions": publicProcedure.query(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "revoke-session": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "revoke-sessions": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "revoke-other-sessions": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "link-social": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "list-accounts": publicProcedure.query(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "delete-user/callback": publicProcedure.query(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  "unlink-account": publicProcedure.mutation(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+
+  ok: publicProcedure.query(async ({ c, ctx }) => ctx.auth.handler(c.req.raw)),
+
+  error: publicProcedure.query(async ({ c, ctx }) =>
+    ctx.auth.handler(c.req.raw)
+  ),
+});
+ */
