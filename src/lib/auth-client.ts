@@ -1,13 +1,16 @@
-import { authInstance } from "@/server/jstack";
+import type { Auth } from "@/server/jstack";
 import { inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL:
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : process.env.BETTER_AUTH_URL || "https://yourdomain.com",
-  plugins: [inferAdditionalFields<typeof authInstance>()],
+  baseUrl: `${getBaseUrl()}`,
+  plugins: [inferAdditionalFields<Auth>()],
 });
+
+function getBaseUrl() {
+  // 👇 Adjust for wherever you deploy
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return `http://localhost:3000`;
+}
 
 // type Session = typeof authClient.$Infer.Session;

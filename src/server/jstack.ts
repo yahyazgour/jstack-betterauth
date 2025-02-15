@@ -5,6 +5,7 @@ import { drizzle } from "drizzle-orm/libsql";
 import { env } from "hono/adapter";
 import { HTTPException } from "hono/http-exception";
 import { InferMiddlewareOutput, jstack } from "jstack";
+import { betterAuthOptions } from "./db/auth-options";
 import * as schema from "./db/schema";
 
 interface Env {
@@ -16,64 +17,34 @@ interface Env {
 
 export const j = jstack.init<Env>();
 
-/**
- * Type-safely injects database into all procedures
- *
- * @see https://jstack.app/docs/backend/middleware
- */
-
-let db: ReturnType<typeof drizzle>;
 const databaseMiddleware = j.middleware(async ({ c, next }) => {
-  if (!db) {
-    const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = env(c);
-    const turso = createClient({
-      url: TURSO_DATABASE_URL!,
-      authToken: TURSO_AUTH_TOKEN,
-    });
-    db = drizzle(turso, { schema });
-  }
-  return await next({ db: db });
+  const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = env(c);
+
+  const turso = createClient({
+    url: TURSO_DATABASE_URL!,
+    authToken: TURSO_AUTH_TOKEN!,
+  });
+  const db = drizzle(turso, { schema });
+
+  return await next({ db });
 });
 
-type AuthMiddlewareOutput = InferMiddlewareOutput<typeof databaseMiddleware>;
-
-export let auth: ReturnType<typeof betterAuth>;
 const authMiddleware = j.middleware(async ({ ctx, next }) => {
-  const { db } = ctx as AuthMiddlewareOutput;
+  const { db } = ctx as InferMiddlewareOutput<typeof databaseMiddleware>;
 
-  if (!auth) {
-    auth = betterAuth({
-      database: drizzleAdapter(db, {
-        provider: "sqlite",
-      }),
-      /* user: {
-        additionalFields: {
-          role: {
-            type: "string",
-          },
-        },
-      }, */
-      advanced: {
-        defaultCookieAttributes: {
-          sameSite: "none",
-          secure: true,
-        },
-      },
-      emailAndPassword: {
-        enabled: true,
-        requireEmailVerification: false,
-      },
-    });
-  }
-  return await next({ auth: auth });
+  const auth = betterAuth({
+    database: drizzleAdapter(db, {
+      provider: "sqlite",
+    }),
+    ...betterAuthOptions,
+  });
+
+  return await next({ auth });
 });
-
-type AuthenticationMiddlewareOutput = InferMiddlewareOutput<
-  typeof authMiddleware
->;
 
 const authenticationMiddleware = j.middleware(async ({ c, ctx, next }) => {
-  const { auth } = ctx as AuthenticationMiddlewareOutput;
+  const { auth } = ctx as InferMiddlewareOutput<typeof authMiddleware>;
+
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
   if (!session) {
@@ -81,16 +52,11 @@ const authenticationMiddleware = j.middleware(async ({ c, ctx, next }) => {
       message: "Unauthorized, sign in to continue.",
     });
   }
+
   return await next({ session });
 });
 
-/**
- * Public (unauthenticated) procedures
- *
- * This is the base piece you use to build new queries and mutations on your API.
- */
-
-export type Session = typeof auth.$Infer.Session;
+export type Auth = InferMiddlewareOutput<typeof authMiddleware>["auth"];
 
 export const publicProcedure = j.procedure
   .use(databaseMiddleware)

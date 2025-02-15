@@ -1,9 +1,7 @@
 "use client";
-import { authClient } from "@/lib/auth-client"; //import the auth client
+import { authClient } from "@/lib/auth-client";
 import { client } from "@/lib/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { ServerActionAction } from "next/dist/client/components/router-reducer/router-reducer-types";
-import { Span } from "next/dist/trace";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -15,7 +13,6 @@ export function SignUp({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [image, setImage] = useState<File | null>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isDeletingPosts, startTransition] = useTransition();

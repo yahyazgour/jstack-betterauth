@@ -1,14 +1,16 @@
-import type { AppRouter } from "@/server";
 import { createClient } from "jstack";
-
-/**
- * Your type-safe API client
- * @see https://jstack.app/docs/backend/api-client
- */
+import type { AppRouter } from "@/server";
 
 export const client = createClient<AppRouter>({
-  baseUrl:
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000/api"
-      : process.env.JSTACK_API_URL || "https://yourdomain.com/api",
+  baseUrl: `${getBaseUrl()}/api`,
 });
+
+function getBaseUrl() {
+  // 👇 In production, use the production worker
+  if (process.env.NODE_ENV === "production") {
+    return "https://<YOUR_DEPLOYMENT>.workers.dev";
+  }
+
+  // 👇 Locally, use wrangler backend
+  return `http://localhost:3000`;
+}
