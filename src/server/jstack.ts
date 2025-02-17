@@ -52,7 +52,7 @@ const authenticationMiddleware = j.middleware(async ({ ctx, next }) => {
 
   if (!session) {
     throw new HTTPException(401, {
-      message: "Unauthorized, sign in to continue.",
+      message: "Unauthenticated, sign in to continue.",
     });
   }
 
@@ -67,6 +67,6 @@ export const authenticatedProcedure = publicProcedure.use(
   authenticationMiddleware
 );
 
-// add authorization middleware (organizations)
+// add authorization middleware (ownership, organizations)
 // add paywall middleware (premium users)
 // add sudo middleware (admin users)

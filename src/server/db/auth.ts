@@ -1,3 +1,5 @@
+// do not use, this is just for generating the schema
+
 import { createClient } from "@libsql/client";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";

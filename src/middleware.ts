@@ -22,3 +22,5 @@ export default async function authMiddleware(request: NextRequest) {
 export const config = {
   matcher: [],
 };
+
+// more middleware logic for authorization

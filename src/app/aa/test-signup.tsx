@@ -78,7 +78,7 @@ export function SignUp({
           ? data
             ? `Signed in as ${data.user.email}`
             : `Please log in`
-          : null}
+          : `loading`}
       </span>
 
       <input
