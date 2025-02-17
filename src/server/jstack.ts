@@ -29,7 +29,7 @@ const databaseMiddleware = j.middleware(async ({ c, next }) => {
   return await next({ db });
 });
 
-const authMiddleware = j.middleware(async ({ ctx, next }) => {
+const authMiddleware = j.middleware(async ({ c, ctx, next }) => {
   const { db } = ctx as InferMiddlewareOutput<typeof databaseMiddleware>;
 
   const auth = betterAuth({
@@ -39,13 +39,16 @@ const authMiddleware = j.middleware(async ({ ctx, next }) => {
     ...betterAuthOptions,
   });
 
-  return await next({ auth });
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+  return await next({ auth, session });
 });
 
-const authenticationMiddleware = j.middleware(async ({ c, ctx, next }) => {
-  const { auth } = ctx as InferMiddlewareOutput<typeof authMiddleware>;
+export type Auth = InferMiddlewareOutput<typeof authMiddleware>["auth"];
+export type Session = InferMiddlewareOutput<typeof authMiddleware>["session"];
 
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+const authenticationMiddleware = j.middleware(async ({ ctx, next }) => {
+  const { session } = ctx as InferMiddlewareOutput<typeof authMiddleware>;
 
   if (!session) {
     throw new HTTPException(401, {
@@ -55,8 +58,6 @@ const authenticationMiddleware = j.middleware(async ({ c, ctx, next }) => {
 
   return await next({ session });
 });
-
-export type Auth = InferMiddlewareOutput<typeof authMiddleware>["auth"];
 
 export const publicProcedure = j.procedure
   .use(databaseMiddleware)

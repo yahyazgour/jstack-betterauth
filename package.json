@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "auth:generate": "bunx @better-auth/cli generate",
+    "auth:generate": "bunx @better-auth/cli generate --config ./src/server/db/auth.ts --output ./src/server/db/auth-schema.ts -y",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",

@@ -15,9 +15,6 @@ export const user = sqliteTable(
   (table) => [index("idx_posts_name").on(table.name)]
 );
 
-// export type SelectUser = typeof user.$inferSelect;
-// export type InsertUser = typeof user.$inferInsert;
-
 export const session = sqliteTable("session", {
   id: text("id").primaryKey(),
   expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
@@ -68,3 +65,6 @@ export const posts = sqliteTable("posts", {
   createdAt: integer("created_at", { mode: "timestamp" }),
   updatedAt: integer("updated_at", { mode: "timestamp" }),
 });
+
+// export type SelectUser = typeof user.$inferSelect;
+// export type InsertUser = typeof user.$inferInsert;
