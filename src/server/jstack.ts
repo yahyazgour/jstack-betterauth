@@ -56,17 +56,16 @@ const authenticationMiddleware = j.middleware(async ({ ctx, next }) => {
     });
   }
 
-  return await next({ session });
+  return await next({ session, user: session.user });
 });
 
-export const publicProcedure = j.procedure
-  .use(databaseMiddleware)
-  .use(authMiddleware);
+export type User = InferMiddlewareOutput<typeof authenticationMiddleware>["user"];
 
-export const authenticatedProcedure = publicProcedure.use(
-  authenticationMiddleware
-);
-
-// add authorization middleware (ownership, organizations)
-// add paywall middleware (premium users)
-// add sudo middleware (admin users)
+/* ----------------------------------------------------------------------------- */
+/*                               Procedures                               */
+/* ----------------------------------------------------------------------------- */
+export const publicProcedure = j.procedure.use(databaseMiddleware).use(authMiddleware);
+export const authenticatedProcedure = publicProcedure.use(authenticationMiddleware);
+// authorization middleware (ownership, organizations)
+// paywall middleware (premium users)
+// sudo middleware (admin users)
