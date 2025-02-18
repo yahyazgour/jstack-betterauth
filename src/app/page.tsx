@@ -4,7 +4,9 @@ const Home = () => {
   return (
     <div>
       Home
-      <Button>Button</Button>
+      <Button variant="destructive" size="lg">
+        Button
+      </Button>
     </div>
   );
 };
