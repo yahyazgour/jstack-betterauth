@@ -5,11 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-export function SignUp({
-  revalidatePosts,
-}: {
-  revalidatePosts: () => Promise<void>;
-}) {
+export function SignUp({ revalidatePosts }: { revalidatePosts: () => Promise<void> }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -37,7 +33,7 @@ export function SignUp({
         onError: (ctx) => {
           alert(ctx.error.message);
         },
-      }
+      },
     );
   };
 
@@ -55,7 +51,7 @@ export function SignUp({
         onError: (ctx) => {
           alert(ctx.error.message);
         },
-      }
+      },
     );
   };
 
@@ -95,16 +91,10 @@ export function SignUp({
         style={{ backgroundColor: "white" }}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button
-        onClick={signIn}
-        className="text-white border-2 p-2 border-red-500"
-      >
+      <button onClick={signIn} className="text-white border-2 p-2 border-red-500">
         Sign In
       </button>
-      <button
-        onClick={signOut}
-        className="text-white border-2 p-2 border-red-500"
-      >
+      <button onClick={signOut} className="text-white border-2 p-2 border-red-500">
         Sign Out
       </button>
       <button

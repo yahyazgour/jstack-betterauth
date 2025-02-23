@@ -1,4 +1,5 @@
 // import { cors } from "hono/cors";
+import { cors } from "hono/cors";
 import { j } from "./jstack";
 import { authRouter } from "./routers/auth-router";
 import { postRouter } from "./routers/post-router";
@@ -9,40 +10,38 @@ import { postRouter } from "./routers/post-router";
  *
  * @see https://jstack.app/docs/backend/app-router
  */
+
 const api = j
   .router()
   .basePath("/api")
-  .use(j.defaults.cors)
-  //.use(corsMiddleware);
-  .onError(j.defaults.errorHandler);
-
-/*
-  const corsMiddleware = j.fromHono(
+  /* .use(j.defaults.cors) */
+  .use(
     cors({
-      origin: "http://localhost:3001", // replace with your origin
-      allowHeaders: ["Content-Type", "Authorization"],
-      allowMethods: ["POST", "GET", "OPTIONS"],
-      exposeHeaders: ["Content-Length"],
-      maxAge: 600,
+      origin: (origin) => origin, // default: allow any origin
+      // origin: "http://localhost:3000", // !! add your frontend URL here
+      allowHeaders: ["x-is-superjson", "Content-Type", "Authorization"],
+      exposeHeaders: ["x-is-superjson", "Content-Length"],
+      allowMethods: ["GET", "POST", "OPTIONS" /* , "DELETE", "PUT" */],
       credentials: true,
-    })
-  );
-*/
-
-/**
- * This is the main router for your server.
- * All routers in /server/routers should be added here manually.
- */
+      maxAge: 600,
+    }),
+  )
+  .onError(j.defaults.errorHandler);
 
 const appRouter = j.mergeRouters(api, {
   post: postRouter,
   auth: authRouter,
 });
 
-console.log(
-  "--------------------------------------------------------------------------------------------------"
-);
+console.log("======================================================");
 
 export type AppRouter = typeof appRouter;
+
+/* import type { InferRouterInputs, InferRouterOutputs } from "jstack"
+type InferInput = InferRouterInputs<AppRouter>
+type InferOutput = InferRouterOutputs<AppRouter>
+// 👇 Usage: InferInput[<router>][<procedure>]
+type Input = InferInput["post"]["example"]
+type Output = InferOutput["post"]["example"] */
 
 export default appRouter;

@@ -1,21 +1,24 @@
 import { betterFetch } from "@better-fetch/fetch";
 import { NextResponse, type NextRequest } from "next/server";
-import type { Session } from "./server/jstack";
+import type { Session } from "./lib/auth-client";
 
 export default async function authMiddleware(request: NextRequest) {
-  const { data: session } = await betterFetch<Session>(
-    "/api/auth/get-session",
-    {
-      baseURL: request.nextUrl.origin,
-      headers: {
-        cookie: request.headers.get("cookie") || "",
-      },
-    }
-  );
+  /* const { data: session } = await betterFetch<Session>("/api/auth/get-session", {
+    baseURL: "http://localhost:8080",
+    headers: {
+      cookie: request.headers.get("cookie") || "",
+    },
+  });
 
   if (!session) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
+  } */
+
+  const sessionToken = request.cookies.get("better-auth.session_token");
+  if (!sessionToken) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
   }
+
   return NextResponse.next();
 }
 

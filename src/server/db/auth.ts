@@ -1,6 +1,6 @@
-// do not use, this is just for generating the schema
+// !! do not use, this is just for generating the schema
 
-import { createClient } from "@libsql/client";
+/* import { createClient } from "@libsql/client";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { drizzle } from "drizzle-orm/libsql";
@@ -18,4 +18,4 @@ export const auth = betterAuth({
     provider: "sqlite",
   }),
   ...betterAuthOptions,
-});
+}); */

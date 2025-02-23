@@ -20,6 +20,7 @@ export const RecentPost = ({
       const res = await client.post.recent.$get();
       return await res.json();
     },
+    staleTime: 60 * 1000,
   });
 
   const { mutate: createPost, isPending } = useMutation({
