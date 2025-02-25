@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { j } from "./jstack";
 import { authRouter } from "./routers/auth-router";
 import { postRouter } from "./routers/post-router";
+import { usersRouter } from "./routers/user-router";
 
 /**
  * This is your base API.
@@ -31,6 +32,7 @@ const api = j
 const appRouter = j.mergeRouters(api, {
   post: postRouter,
   auth: authRouter,
+  users: usersRouter,
 });
 
 console.log("======================================================");

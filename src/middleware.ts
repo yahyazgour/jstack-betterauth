@@ -4,7 +4,7 @@ import type { Session } from "./lib/auth-client";
 
 export default async function authMiddleware(request: NextRequest) {
   /* const { data: session } = await betterFetch<Session>("/api/auth/get-session", {
-    baseURL: "http://localhost:8080",
+    baseURL: process.env.NEXT_PUBLIC_API_URL!,
     headers: {
       cookie: request.headers.get("cookie") || "",
     },
@@ -15,6 +15,7 @@ export default async function authMiddleware(request: NextRequest) {
   } */
 
   const sessionToken = request.cookies.get("better-auth.session_token");
+
   if (!sessionToken) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
