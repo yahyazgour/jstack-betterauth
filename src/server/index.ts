@@ -17,7 +17,7 @@ const api = j
   /* .use(j.defaults.cors) */
   .use(
     cors({
-      origin: (origin) => origin, // default: allow any origin
+      origin: (origin) => origin,
       // origin: "http://localhost:3000", // !! add your frontend URL here
       allowHeaders: ["x-is-superjson", "Content-Type", "Authorization"],
       exposeHeaders: ["x-is-superjson", "Content-Length"],

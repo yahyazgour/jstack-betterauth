@@ -1,23 +1,29 @@
 import { BetterAuthOptions } from "better-auth";
+import { Env } from "../jstack";
 
-export const betterAuthOptions = {
-  user: {
-    additionalFields: {
-      role: {
-        type: "string",
+export const betterAuthOptions = (
+  clientHost: Env["Bindings"]["CLIENT_HOST"],
+  betterAuthUrl: Env["Bindings"]["BETTER_AUTH_URL"],
+) => {
+  return {
+    user: {
+      additionalFields: {
+        role: {
+          type: "string",
+        },
       },
     },
-  },
-  advanced: {
-    defaultCookieAttributes: {
-      sameSite: "none",
-      secure: true,
+    advanced: {
+      defaultCookieAttributes: {
+        sameSite: "none",
+        secure: true,
+      },
     },
-  },
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: false,
-  },
-  trustedOrigins: ["http://localhost:3000"], // !! add your frontend URL here
-  baseURL: "http://localhost:8080", // !! ADD CLOUDFLARE WORKERS VARIABLE MANAGEMENT FOR STAGING AND PRODUCTION https://developers.cloudflare.com/workers/configuration/environment-variables/
-} satisfies BetterAuthOptions;
+    emailAndPassword: {
+      enabled: true,
+      requireEmailVerification: false,
+    },
+    trustedOrigins: [clientHost],
+    baseURL: betterAuthUrl,
+  } satisfies BetterAuthOptions;
+};
