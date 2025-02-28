@@ -18,8 +18,8 @@ export const auth = betterAuth({
     provider: "sqlite",
   }),
   ...betterAuthOptions(
-    process.env.NEXT_PUBLIC_CLIENT_HOST!,
-    process.env.NEXT_PUBLIC_BETTER_AUTH_URL!,
+    process.env.CLIENT_HOST!,
+    process.env.BETTER_AUTH_URL!,
+    process.env.BETTER_AUTH_SECRET!,
   ),
-});
- */
+});*/

@@ -15,10 +15,9 @@ export interface Env {
   Bindings: {
     TURSO_DATABASE_URL: string;
     TURSO_AUTH_TOKEN: string;
+    CLIENT_HOST: string;
     BETTER_AUTH_URL: string;
     BETTER_AUTH_SECRET: string;
-    CLIENT_HOST: string;
-    API_HOST: string;
   };
 }
 
@@ -37,13 +36,13 @@ const databaseMiddleware = j.middleware(async ({ c, next }) => {
 });
 
 const authMiddleware = j.middleware(async ({ c, ctx, next }) => {
-  const { CLIENT_HOST, BETTER_AUTH_URL } = env(c);
+  const { CLIENT_HOST, BETTER_AUTH_URL, BETTER_AUTH_SECRET } = env(c);
   const { db } = ctx as InferMiddlewareOutput<typeof databaseMiddleware>;
   const auth = betterAuth({
     database: drizzleAdapter(db, {
       provider: "sqlite",
     }),
-    ...betterAuthOptions(CLIENT_HOST!, BETTER_AUTH_URL!),
+    ...betterAuthOptions(CLIENT_HOST!, BETTER_AUTH_URL!, BETTER_AUTH_SECRET!),
   });
   return await next({ auth });
 });

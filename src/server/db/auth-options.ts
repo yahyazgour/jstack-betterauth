@@ -4,6 +4,7 @@ import { Env } from "../jstack";
 export const betterAuthOptions = (
   clientHost: Env["Bindings"]["CLIENT_HOST"],
   betterAuthUrl: Env["Bindings"]["BETTER_AUTH_URL"],
+  betterAuthSecret: Env["Bindings"]["BETTER_AUTH_SECRET"],
 ) => {
   return {
     user: {
@@ -25,5 +26,6 @@ export const betterAuthOptions = (
     },
     trustedOrigins: [clientHost],
     baseURL: betterAuthUrl,
+    secret: betterAuthSecret,
   } satisfies BetterAuthOptions;
 };
