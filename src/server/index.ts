@@ -4,6 +4,7 @@ import { j } from "./jstack";
 import { authRouter } from "./routers/auth-router";
 import { postRouter } from "./routers/post-router";
 import { usersRouter } from "./routers/user-router";
+import { env } from "hono/adapter";
 
 /**
  * This is your base API.
@@ -27,6 +28,10 @@ const api = j
       maxAge: 600,
     }),
   )
+  /* .on(["POST", "GET"], "/auth/**", (c) => {
+    const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = env(c);
+    return auth.handler(c.req.raw)
+  }) */
   .onError(j.defaults.errorHandler);
 
 const appRouter = j.mergeRouters(api, {

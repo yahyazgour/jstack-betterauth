@@ -14,11 +14,23 @@ export const betterAuthOptions = (
         },
       },
     },
+    session: {
+      expiresIn: 60 * 60 * 24 * 7, // 7 days
+      updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
+      freshAge: 60 * 5,
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60 // Cache duration in seconds
+      },
+    },
     advanced: {
       defaultCookieAttributes: {
         sameSite: "none",
         secure: true,
+        partitioned: true,
+        // httpOnly: true,
       },
+      cookiePrefix: "my-app",
     },
     emailAndPassword: {
       enabled: true,
