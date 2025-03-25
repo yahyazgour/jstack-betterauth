@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1738215666387,
-      "tag": "0000_volatile_forgotten_one",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1738224219247,
-      "tag": "0001_previous_namorita",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1738224424032,
-      "tag": "0002_volatile_juggernaut",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1738224449768,
-      "tag": "0003_little_longshot",
+      "when": 1742164485881,
+      "tag": "0000_colorful_bulldozer",
       "breakpoints": true
     }
   ]

@@ -8,7 +8,7 @@ import { betterAuthOptions } from "./auth-options";
 
 const turso = createClient({
   url: process.env.TURSO_DATABASE_URL!,
-  authToken: process.env.TURSO_AUTH_TOKEN!, // !! might cause issue
+  authToken: process.env.TURSO_AUTH_TOKEN!,
 });
 
 const db = drizzle(turso);
@@ -18,8 +18,8 @@ export const auth = betterAuth({
     provider: "sqlite",
   }),
   ...betterAuthOptions(
-    process.env.CLIENT_HOST!,
     process.env.BETTER_AUTH_URL!,
     process.env.BETTER_AUTH_SECRET!,
+    process.env.CLIENT_HOST!,
   ),
-});*/
+}); */

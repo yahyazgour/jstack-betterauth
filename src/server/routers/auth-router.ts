@@ -43,6 +43,34 @@ export const authRouter = j.router({
   // Utility
   ok: createAuthHandler("query"),
   error: createAuthHandler("query"),
+
+  // Organization management
+  "organization/create": createAuthHandler("mutation"),
+  "organization/update": createAuthHandler("mutation"),
+  "organization/delete": createAuthHandler("mutation"),
+  "organization/set-active": createAuthHandler("mutation"),
+  "organization/get-full-organization": createAuthHandler("query"),
+  "organization/list": createAuthHandler("query"),
+  "organization/check-slug": createAuthHandler("mutation"),
+
+  // Organization membership
+  "organization/get-active-member": createAuthHandler("query"),
+  "organization/leave": createAuthHandler("mutation"),
+  "organization/has-permission": createAuthHandler("mutation"),
+
+  // Invitations
+  "organization/invite-member": createAuthHandler("mutation"),
+  "organization/cancel-invitation": createAuthHandler("mutation"),
+  "organization/accept-invitation": createAuthHandler("mutation"),
+  "organization/get-invitation": createAuthHandler("query"),
+  "organization/reject-invitation": createAuthHandler("mutation"),
+
+  // Member management
+  "organization/remove-member": createAuthHandler("mutation"),
+  "organization/update-member-role": createAuthHandler("mutation"),
+
+  // Oauth-proxy
+  "oauth-proxy-callback": createAuthHandler("query"),
 });
 
 /* export const authRouter = j.router({

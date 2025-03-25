@@ -2,6 +2,13 @@ import { posts } from "@/server/db/schema";
 import { desc } from "drizzle-orm";
 import { z } from "zod";
 import { authenticatedProcedure, j, publicProcedure } from "../jstack";
+import { type } from "arktype";
+
+const createPostSchema = type({
+  name: "string>0",
+});
+
+const Post = createPostSchema.infer;
 
 export const postRouter = j.router({
   list: publicProcedure.query(async ({ c, ctx }) => {
@@ -20,7 +27,7 @@ export const postRouter = j.router({
     return c.superjson(recentPost ?? null);
   }),
 
-  create: publicProcedure
+  /* create: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, c, input }) => {
       const { db } = ctx;
@@ -30,7 +37,17 @@ export const postRouter = j.router({
         updatedAt: new Date(),
       });
       return c.superjson(post);
-    }),
+    }), */
+
+  create: publicProcedure.input(createPostSchema).mutation(async ({ ctx, c, input }) => {
+    const { db } = ctx;
+    const post = await db.insert(posts).values({
+      name: input.name,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    return c.superjson(post);
+  }),
 
   "delete-all": publicProcedure.mutation(async ({ c, ctx }) => {
     const { db } = ctx;

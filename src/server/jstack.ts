@@ -1,13 +1,13 @@
 import { createClient } from "@libsql/client";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { Buffer } from "buffer";
 import { drizzle } from "drizzle-orm/libsql";
 import { env } from "hono/adapter";
 import { HTTPException } from "hono/http-exception";
 import { InferMiddlewareOutput, jstack } from "jstack";
 import { betterAuthOptions } from "./db/auth-options";
 import * as schema from "./db/schema";
-import { Buffer } from "buffer";
 
 globalThis.Buffer = Buffer;
 
@@ -15,9 +15,15 @@ export interface Env {
   Bindings: {
     TURSO_DATABASE_URL: string;
     TURSO_AUTH_TOKEN: string;
-    CLIENT_HOST: string;
     BETTER_AUTH_URL: string;
     BETTER_AUTH_SECRET: string;
+    CLIENT_HOST: string;
+    DISCORD_CLIENT_ID: string;
+    DISCORD_CLIENT_SECRET: string;
+    TWITCH_CLIENT_ID: string;
+    TWITCH_CLIENT_SECRET: string;
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
   };
 }
 
@@ -36,13 +42,34 @@ const databaseMiddleware = j.middleware(async ({ c, next }) => {
 });
 
 const authMiddleware = j.middleware(async ({ c, ctx, next }) => {
-  const { CLIENT_HOST, BETTER_AUTH_URL, BETTER_AUTH_SECRET } = env(c);
   const { db } = ctx as InferMiddlewareOutput<typeof databaseMiddleware>;
+  const {
+    BETTER_AUTH_URL,
+    BETTER_AUTH_SECRET,
+    CLIENT_HOST,
+    DISCORD_CLIENT_ID,
+    DISCORD_CLIENT_SECRET,
+    TWITCH_CLIENT_ID,
+    TWITCH_CLIENT_SECRET,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+  } = env(c);
   const auth = betterAuth({
     database: drizzleAdapter(db, {
       provider: "sqlite",
+      // schema: schema,
     }),
-    ...betterAuthOptions(CLIENT_HOST!, BETTER_AUTH_URL!, BETTER_AUTH_SECRET!),
+    ...betterAuthOptions(
+      BETTER_AUTH_URL!,
+      BETTER_AUTH_SECRET!,
+      CLIENT_HOST!,
+      DISCORD_CLIENT_ID!,
+      DISCORD_CLIENT_SECRET!,
+      TWITCH_CLIENT_ID!,
+      TWITCH_CLIENT_SECRET!,
+      GOOGLE_CLIENT_ID!,
+      GOOGLE_CLIENT_SECRET!,
+    ),
   });
   return await next({ auth });
 });

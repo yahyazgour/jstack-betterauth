@@ -1,6 +1,7 @@
 {
   "name": "testing-jstack",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -47,6 +48,7 @@
     "@tailwindcss/postcss": "^4.0.0",
     "@tanstack/react-query": "^5.51.23",
     "@tanstack/react-query-devtools": "^5.66.0",
+    "arktype": "^2.1.9",
     "babel-plugin-react-compiler": "^19.0.0-beta-27714ef-20250124",
     "better-auth": "1.2.0",
     "buffer": "^6.0.3",
