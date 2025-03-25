@@ -39,7 +39,7 @@ export const postRouter = j.router({
       return c.superjson(post);
     }), */
 
-  create: publicProcedure.input(createPostSchema).mutation(async ({ ctx, c, input }) => {
+  create: publicProcedure.input(z.object({ name: z.string().min(1) })).mutation(async ({ ctx, c, input }) => {
     const { db } = ctx;
     const post = await db.insert(posts).values({
       name: input.name,
